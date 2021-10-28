@@ -75,12 +75,12 @@ public struct SolanaKeyPair {
     }
     
     public static func deriveKey(path:String, seed:Data, keyString:String) -> (seed:Data,chainCode:Data) {
-        let (masterKey,masterChainCode) = self.masterKeys(seed: seed, keyString: keyString)
+        let (masterKey,masterChainCode) = self.masterKey(seed: seed, keyString: keyString)
         let paths = path.components(separatedBy: "/")
         return self.deriveKeys(paths: paths, seed: masterKey, chainCode: masterChainCode)
     }
     
-    public static func masterKeys(seed:Data, keyString:String) -> (seedData:Data,chainCode:Data) {
+    public static func masterKey(seed:Data, keyString:String) -> (seedData:Data,chainCode:Data) {
         let hashData = Data(try! HMAC(key:[UInt8](keyString.utf8), variant: .sha512).authenticate([UInt8](seed)))
         let masterKey = hashData.subdata(in:0..<32)
         let masterChainCode = hashData.subdata(in:32..<64)
